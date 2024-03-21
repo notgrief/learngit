@@ -105,9 +105,11 @@ for /d %%F in ("%SEARCH_PATH%\*") do (
 @REM cp '../tool/FileMerge*/MP/HDFED1.0.bin' ../tool/mp_package_hg2259/Bin || goto failed
 echo copy BURNER BIN
 cp '%~dp0/hg2259/tool/%SEARCH_RESULT%/MP/HG2259_BURNER.bin' %~dp0/mp_package_hg2259/Bin || goto failed
+echo copy MP elf
+cp '%~dp0/hg2259/output/HG2259_MP.elf' %~dp0/mp_package_hg2259/Bin || goto failed
 echo copy MP BIN
 cp '%~dp0/hg2259/tool/%SEARCH_RESULT%/MP/HDFED1.0.bin' %~dp0/mp_package_hg2259/Bin || goto failed
-echo copy MP BIN
+echo copy RDT BIN
 cp '%~dp0/hg2259/tool/%SEARCH_RESULT%/RDT/HDRED1.0.bin' %~dp0/mp_package_hg2259/Bin || goto failed
 
 set path=%path%;C:\Program Files\Git\cmd
@@ -170,14 +172,13 @@ for /f "delims=" %%a in ('powershell -Command "$str = '%current_sha%'; $str.Subs
 )
 
 if "%current_tag%" == "" (
-	echo *****************!shortcommitnew! and !old_tag! PR***************** >> %output_file%
 	set "current_tag=%old_tag%"
+	echo Tag Name: !current_tag! > %output_file%
+	echo *****************!shortcommitnew! and !old_tag! PR***************** >> %output_file%
 ) else (
+	echo Tag Name: !current_tag! > %output_file%
 	echo *****************!current_tag! and !old_tag! PR***************** >> %output_file%
 )
-
-echo Tag Name: !current_tag! > %output_file%
-echo Commit Hash: !shortcommitnew! >> %output_file%
 
 :: 使用git log列出两个commit之间的提交，并通过findstr搜索PR信息
 git log --pretty=format:"%%h %%s" %old_sha%..%current_sha% | findstr /i /c:"Pull request #" >> "%output_file%"
@@ -198,8 +199,8 @@ cd %~dp0\mp_package_hg2259\Bin
 set "hexfile=input.txt"
 set "outputfile=output.txt"
 :: 需要根据 bin 文件 sha 的位置来修改
-set "offset=459776"
-@REM set "offset=492544"
+set "offset=492544"
+@REM set "offset=459776"
 set "bytes=7"
 
 ::使用certutil将二进制文件解码为16进制文件
@@ -250,16 +251,16 @@ echo %datetime%
 
 :: 设置要打包的文件夹路径和压缩文件的基本名称
 set "folderPath=%~dp0/mp_package_hg2259"
-set "zipBaseName=hg2259"
+set "zipBaseName=mp_package_hg2259"
 
 :: 调用7-Zip进行压缩，并将格式化后的日期和时间添加到压缩文件名中
-"%~dp0\7z2401-extra\7za.exe" a -tzip "%~dp0\!zipBaseName!_!branchName!_!current_tag!_!datetime!.zip" "%folderPath%\*"
+"%~dp0\7z2401-extra\7za.exe" a -tzip "%~dp0\!zipBaseName!_!branchName!_!datetime!.zip" "%folderPath%\*"
 
 :: 显示压缩完成消息
 echo *************************************************************************************************
 echo **************************           Execution Succeeded            *****************************
 echo **************************              zip completed               *****************************
-echo ************   zip path:%~dp0\!zipBaseName!_!branchName!_!current_tag!_!datetime!.zip   ***********
+echo ************   zip path:%~dp0\!zipBaseName!_!branchName!_!datetime!.zip   ***********
 echo *************************************************************************************************
 
 endlocal
