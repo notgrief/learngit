@@ -1,0 +1,6 @@
+打开MPTool_Packaging.bat脚本
+
+:: 拉取最新的文件夹
+58   git clone http://%gitUsername%:%gitPassword%@192.168.18.188:7990/scm/hg2259/mp_package_hg2259.git "%SCRIPT_DIR%\%FOLDER_1%"
+59   git clone http://%gitUsername%:%gitPassword%@192.168.18.188:7990/scm/hg2259/hg2259.git "%SCRIPT_DIR%\%FOLDER_2%"
+删除%gitUsername%:%gitPassword%
