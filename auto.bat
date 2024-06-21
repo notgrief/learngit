@@ -306,21 +306,26 @@ if "%flash_type%"=="2" (
 :: 复制Bin文件
 set "target_dir=%SCRIPT_DIR%\%FOLDER_1%\Bin"
 
-set "search_dir1=%SCRIPT_DIR%\%FOLDER_2%\tool\FileMerge 20240131\MP"
+:: 搜索包含 FileMerge 的文件夹
+for /d %%d in ("%SCRIPT_DIR%\%FOLDER_2%\tool\FileMerge*") do (
+    set "filemerge_dir=%%d"
+)
+
+set "search_dir1=%filemerge_dir%\MP"
+set "search_dir2=%filemerge_dir%\RDT"
+
 set "file1_name=HG2259_BURNER.bin"
 for /r "%search_dir1%" %%i in (*%file1_name%*) do (
     copy "%%~fsi" "%target_dir%"
     echo copy BURNER_BIN
 )
 
-set "search_dir2=%SCRIPT_DIR%\%FOLDER_2%\tool\FileMerge 20240131\MP"
-for /r "%search_dir2%" %%i in (*%file2_name%*) do (
+for /r "%search_dir1%" %%i in (*%file2_name%*) do (
     copy "%%~fsi" "%target_dir%"
     echo copy MP_BIN
 )
 
-set "search_dir3=%SCRIPT_DIR%\%FOLDER_2%\tool\FileMerge 20240131\RDT"
-for /r "%search_dir3%" %%i in (*%file3_name%*) do (
+for /r "%search_dir2%" %%i in (*%file3_name%*) do (
     copy "%%~fsi" "%target_dir%"
     echo copy RDT_BIN
 )
@@ -373,7 +378,7 @@ copy "%output_file%" "%SCRIPT_DIR%\%FOLDER_1%"
 del %output_file%
 
 :: 定义要搜索的文件路径
-set file_path=%SCRIPT_DIR%\%FOLDER_2%\tool\FileMerge 20240131\MP\%file2_name%.bin
+set file_path=%search_dir1%\%file2_name%.bin
 
 :: 检查文件是否存在
 if not exist "%file_path%" (
