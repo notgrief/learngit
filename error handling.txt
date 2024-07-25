@@ -1,7 +1,0 @@
-1. 问题：在Git clone过程中出现too many arguments...，导致clone失败。
-   解决方法：打开auto.bat
-	58   git clone http://%GitUsername%%Git_Password%@192.168.18.188:7990/scm/hg2259/mp_package_hg2259.git "%SCRIPT_DIR%\%FOLDER_1%"
-	59   git clone http://%GitUsername%%Git_Password%@192.168.18.188:7990/scm/hg2259/hg2259.git "%SCRIPT_DIR%\%FOLDER_2%"
-   删除%GitUsername%%Git_Password%
-
-2. 
